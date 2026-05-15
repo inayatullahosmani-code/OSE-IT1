@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="IT Lernen">
+<meta name="theme-color" content="#0a0e1a">
+<title>IT Ausbildung Austria</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0e1a;--bg2:#111827;--bg3:#1a2235;--accent:#00d4ff;--accent2:#7c3aed;--accent3:#10b981;--danger:#ef4444;--warn:#f59e0b;--text:#e2e8f0;--text2:#94a3b8;--border:#1e293b;--card:#141c2e;--glow:0 0 20px rgba(0,212,255,0.3)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 20% 20%,rgba(124,58,237,0.08) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(0,212,255,0.06) 0%,transparent 50%);pointer-events:none;z-index:0}
+.screen{display:none;min-height:100vh;position:relative;z-index:1}
+.screen.active{display:flex;flex-direction:column}
+#splash{align-items:center;justify-content:center;gap:16px;background:var(--bg)}
+.splash-logo{font-family:'Space Mono',monospace;font-size:48px;color:var(--accent);text-shadow:var(--glow);animation:pulse 2s infinite}
+.splash-title{font-size:22px;font-weight:900;text-align:center;line-height:1.4}
+.splash-title span{color:var(--accent)}
+.splash-sub{color:var(--text2);font-size:14px}
+.splash-count{color:var(--accent3);font-size:13px;font-weight:700}
+.splash-bar{width:200px;height:3px;background:var(--border);border-radius:99px;overflow:hidden;margin-top:8px}
+.splash-bar-inner{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:99px;animation:loadbar 2.5s ease-in-out forwards}
+@keyframes loadbar{from{width:0}to{width:100%}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
+#home{padding:0 0 80px}
+.home-header{padding:50px 20px 20px;background:linear-gradient(180deg,rgba(124,58,237,0.15) 0%,transparent 100%)}
+.home-greeting{color:var(--text2);font-size:13px;margin-bottom:4px}
+.home-title{font-size:24px;font-weight:900}
+.home-title span{color:var(--accent)}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:16px 20px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 10px;text-align:center}
+.stat-val{font-size:22px;font-weight:900;color:var(--accent);font-family:'Space Mono',monospace}
+.stat-lbl{font-size:10px;color:var(--text2);margin-top:2px}
+.xp-section{padding:0 20px 16px}
+.xp-label{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:6px}
+.xp-bar{height:6px;background:var(--border);border-radius:99px;overflow:hidden}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:99px;transition:width 0.5s ease}
+.streak-banner{margin:0 20px 16px;background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(239,68,68,0.1));border:1px solid rgba(245,158,11,0.3);border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:10px}
+.streak-fire{font-size:28px}
+.streak-info{flex:1}
+.streak-days{font-size:18px;font-weight:900;color:var(--warn)}
+.streak-text{font-size:11px;color:var(--text2)}
+.section-title{padding:0 20px 10px;font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:1px}
+.cats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:0 20px}
+.cat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden}
+.cat-card:active{transform:scale(0.97)}
+.cat-icon{font-size:28px;margin-bottom:8px}
+.cat-name{font-size:14px;font-weight:700}
+.cat-name-de{font-size:11px;color:var(--text2);font-family:'Space Mono',monospace;margin-top:2px}
+.cat-count{font-size:11px;color:var(--text2);margin-top:4px}
+.cat-prog{height:3px;background:var(--border);border-radius:99px;margin-top:8px;overflow:hidden}
+.cat-prog-fill{height:100%;border-radius:99px;transition:width 0.5s}
+.quick-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px 20px 0}
+.quick-btn{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:10px;color:var(--text)}
+.quick-btn:active{transform:scale(0.97)}
+.quick-btn-icon{font-size:22px}
+.quick-btn-text{font-size:12px;font-weight:600}
+.quick-btn.accent{border-color:rgba(0,212,255,0.3);background:rgba(0,212,255,0.05)}
+.quick-btn.purple{border-color:rgba(124,58,237,0.3);background:rgba(124,58,237,0.05)}
+#flashcard{padding:0 0 80px}
+.fc-header{display:flex;align-items:center;gap:12px;padding:50px 20px 16px}
+.back-btn{width:36px;height:36px;background:var(--card);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;flex-shrink:0}
+.fc-cat-name{font-size:15px;font-weight:900;flex:1}
+.fc-progress-text{font-size:12px;color:var(--text2);font-family:'Space Mono',monospace}
+.fc-prog-bar{height:3px;background:var(--border);margin:0 20px 20px;border-radius:99px;overflow:hidden}
+.fc-prog-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:99px;transition:width 0.4s}
+.card-area{flex:1;display:flex;align-items:center;justify-content:center;padding:0 20px;perspective:1000px}
+.flip-card{width:100%;max-width:380px;height:220px;position:relative;cursor:pointer;transform-style:preserve-3d;transition:transform 0.6s cubic-bezier(0.4,0,0.2,1)}
+.flip-card.flipped{transform:rotateY(180deg)}
+.flip-front,.flip-back{position:absolute;inset:0;border-radius:20px;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;gap:8px}
+.flip-front{background:linear-gradient(135deg,var(--card),var(--bg3));border:1px solid var(--border)}
+.flip-back{background:linear-gradient(135deg,rgba(0,212,255,0.1),rgba(124,58,237,0.1));border:1px solid rgba(0,212,255,0.3);transform:rotateY(180deg)}
+.card-label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:2px}
+.card-de{font-family:'Space Mono',monospace;font-size:20px;font-weight:700;color:var(--accent);text-align:center;line-height:1.3}
+.card-en{font-size:12px;color:var(--text2);font-family:'Space Mono',monospace;text-align:center}
+.card-fa{font-size:17px;font-weight:700;color:var(--text);text-align:center;line-height:1.5}
+.card-tap{font-size:11px;color:var(--text2);margin-top:8px}
+.card-fav{position:absolute;top:14px;right:14px;font-size:20px;cursor:pointer;z-index:2}
+.fc-actions{display:flex;gap:12px;padding:20px;justify-content:center}
+.fc-btn{flex:1;max-width:140px;padding:14px;border-radius:14px;border:none;font-family:'Vazirmatn',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s}
+.fc-btn:active{transform:scale(0.96)}
+.fc-btn.wrong{background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.3)}
+.fc-btn.right{background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.3)}
+.fc-hint{text-align:center;font-size:12px;color:var(--text2);padding:0 20px 10px}
+#quiz{padding:0 0 80px}
+.quiz-header{padding:50px 20px 16px;display:flex;align-items:center;gap:12px}
+.quiz-score{background:linear-gradient(135deg,rgba(0,212,255,0.1),rgba(124,58,237,0.1));border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:6px 12px;font-size:13px;font-family:'Space Mono',monospace;color:var(--accent)}
+.quiz-q-num{font-size:12px;color:var(--text2);margin:0 20px 6px}
+.quiz-prog{height:3px;background:var(--border);margin:0 20px 20px;border-radius:99px;overflow:hidden}
+.quiz-prog-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:99px;transition:width 0.4s}
+.quiz-question{margin:0 20px 24px;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px;min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center}
+.quiz-q-label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:2px}
+.quiz-q-word{font-size:22px;font-weight:900;color:var(--accent);font-family:'Space Mono',monospace;line-height:1.3}
+.quiz-q-sub{font-size:12px;color:var(--text2)}
+.quiz-options{display:flex;flex-direction:column;gap:10px;padding:0 20px}
+.quiz-opt{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;cursor:pointer;transition:all 0.2s;font-family:'Vazirmatn',sans-serif;font-size:13px;font-weight:500;color:var(--text);text-align:right;display:flex;align-items:center;gap:10px}
+.quiz-opt:active{transform:scale(0.98)}
+.quiz-opt.correct{background:rgba(16,185,129,0.15);border-color:#10b981;color:#10b981}
+.quiz-opt.wrong{background:rgba(239,68,68,0.1);border-color:#ef4444;color:#ef4444}
+.quiz-opt.disabled{pointer-events:none}
+.opt-letter{width:26px;height:26px;border-radius:8px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:'Space Mono',monospace;flex-shrink:0}
+.quiz-opt.correct .opt-letter{background:rgba(16,185,129,0.2);border-color:#10b981;color:#10b981}
+.quiz-opt.wrong .opt-letter{background:rgba(239,68,68,0.15);border-color:#ef4444;color:#ef4444}
+.quiz-next{margin:16px 20px 0;width:calc(100% - 40px);padding:16px;background:linear-gradient(135deg,var(--accent2),var(--accent));border:none;border-radius:14px;color:#fff;font-family:'Vazirmatn',sans-serif;font-size:16px;font-weight:700;cursor:pointer;display:none}
+.quiz-result{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:16px;text-align:center}
+.result-emoji{font-size:60px}
+.result-title{font-size:26px;font-weight:900}
+.result-score{font-size:48px;font-weight:900;color:var(--accent);font-family:'Space Mono',monospace}
+.result-sub{color:var(--text2);font-size:14px}
+.result-xp{background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);border-radius:12px;padding:10px 24px;font-size:14px;color:var(--accent);font-weight:700}
+.result-btns{display:flex;gap:10px;width:100%;max-width:320px}
+.result-btn{flex:1;padding:14px;border-radius:14px;border:none;font-family:'Vazirmatn',sans-serif;font-size:14px;font-weight:700;cursor:pointer}
+.result-btn.primary{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff}
+.result-btn.secondary{background:var(--card);border:1px solid var(--border);color:var(--text)}
+#favorites{padding:0 0 80px}
+.fav-header{padding:50px 20px 20px}
+.fav-title{font-size:22px;font-weight:900}
+.fav-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--text2)}
+.fav-empty-icon{font-size:48px}
+.fav-list{padding:0 20px;display:flex;flex-direction:column;gap:8px}
+.fav-item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.fav-de{font-family:'Space Mono',monospace;font-size:12px;color:var(--accent);font-weight:700;flex:1}
+.fav-fa{font-size:13px;color:var(--text);flex:2}
+.fav-remove{font-size:18px;cursor:pointer;color:var(--text2)}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,14,26,0.95);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 4px 8px;cursor:pointer;transition:all 0.2s;gap:4px}
+.nav-icon{font-size:22px;transition:transform 0.2s}
+.nav-label{font-size:10px;color:var(--text2);transition:color 0.2s}
+.nav-item.active .nav-label{color:var(--accent)}
+.nav-item.active .nav-icon{transform:translateY(-2px)}
+.xp-toast{position:fixed;top:60px;right:20px;background:linear-gradient(135deg,rgba(0,212,255,0.2),rgba(124,58,237,0.2));border:1px solid rgba(0,212,255,0.4);border-radius:12px;padding:10px 16px;font-size:14px;font-weight:700;color:var(--accent);z-index:999;transform:translateX(120%);transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1)}
+.xp-toast.show{transform:translateX(0)}
+.level-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.3);border-radius:99px;padding:4px 12px;font-size:12px;color:#a78bfa;font-weight:700}
+</style>
+</head>
+<body>
+<div class="screen active" id="splash">
+  <div class="splash-logo">{ }</div>
+  <div class="splash-title">IT Ausbildung<br><span>Austria</span></div>
+  <div class="splash-sub">یادگیری کامل IT از صفر</div>
+  <div class="splash-count">📚 ۱۳ دسته‌بندی | ۶۵۰+ مورد یادگیری</div>
+  <div class="splash-bar"><div class="splash-bar-inner"></div></div>
+</div>
+
+<div class="screen" id="home">
+  <div class="home-header">
+    <div class="home-greeting">خوش آمدی 👋</div>
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div class="home-title">IT <span>Lernen</span></div>
+      <div class="level-badge">⚡ Level <span id="lvl-num">1</span></div>
+    </div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-val" id="stat-learned">0</div><div class="stat-lbl">یاد گرفتی</div></div>
+    <div class="stat-card"><div class="stat-val" id="stat-xp">0</div><div class="stat-lbl">امتیاز XP</div></div>
+    <div class="stat-card"><div class="stat-val" id="stat-acc">-</div><div class="stat-lbl">دقت</div></div>
+  </div>
+  <div class="xp-section">
+    <div class="xp-label"><span>پیشرفت به Level بعدی</span><span id="xp-text">0 / 100</span></div>
+    <div class="xp-bar"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
+  </div>
+  <div class="streak-banner">
+    <div class="streak-fire">🔥</div>
+    <div class="streak-info">
+      <div class="streak-days"><span id="streak-count">0</span> روز</div>
+      <div class="streak-text">Streak — هر روز یاد بگیر!</div>
+    </div>
+    <div style="font-size:11px;color:var(--text2);text-align:left">امروز<br>تمرین کن</div>
+  </div>
+  <div class="quick-row">
+    <div class="quick-btn accent" onclick="startWeakWords()"><div class="quick-btn-icon">🎯</div><div class="quick-btn-text">لغات ضعیف</div></div>
+    <div class="quick-btn purple" onclick="startFavoritesFC()"><div class="quick-btn-icon">⭐</div><div class="quick-btn-text">علاقه‌مندی</div></div>
+  </div>
+  <div class="section-title" style="margin-top:16px">دسته‌بندی‌ها</div>
+  <div class="cats-grid" id="cats-grid"></div>
+</div>
+
+<div class="screen" id="flashcard">
+  <div class="fc-header">
+    <div class="back-btn" onclick="goHome()">←</div>
+    <div class="fc-cat-name" id="fc-cat-name">Network</div>
+    <div class="fc-progress-text" id="fc-prog-text">1/10</div>
+  </div>
+  <div class="fc-prog-bar"><div class="fc-prog-fill" id="fc-prog-fill" style="width:10%"></div></div>
+  <div class="card-area">
+    <div class="flip-card" id="flip-card" onclick="flipCard()">
+      <div class="flip-front">
+        <div class="card-fav" id="card-fav" onclick="event.stopPropagation();toggleFav()">☆</div>
+        <div class="card-label">Deutsch</div>
+        <div class="card-de" id="card-de">Router</div>
+        <div class="card-en" id="card-en">router</div>
+        <div class="card-tap">برای دیدن معنی ضربه بزن 👆</div>
+      </div>
+      <div class="flip-back">
+        <div class="card-label">فارسی</div>
+        <div class="card-fa" id="card-fa">روتر</div>
+        <div class="card-tap">بلدی یا نه؟</div>
+      </div>
+    </div>
+  </div>
+  <div class="fc-hint">ضربه بزن تا برگردد</div>
+  <div class="fc-actions">
+    <button class="fc-btn wrong" onclick="markWrong()">❌ بلد نبودم</button>
+    <button class="fc-btn right" onclick="markRight()">✅ بلد بودم</button>
+  </div>
+</div>
+
+<div class="screen" id="quiz">
+  <div class="quiz-header">
+    <div class="back-btn" onclick="goHome()">←</div>
+    <div style="flex:1;font-size:16px;font-weight:900">آزمون</div>
+    <div class="quiz-score">✅ <span id="quiz-correct">0</span> / <span id="quiz-total-disp">10</span></div>
+  </div>
+  <div class="quiz-q-num" id="quiz-q-num">سوال ۱ از ۱۰</div>
+  <div class="quiz-prog"><div class="quiz-prog-fill" id="quiz-prog-fill" style="width:10%"></div></div>
+  <div class="quiz-question">
+    <div class="quiz-q-label">این کلمه آلمانی را بشناس</div>
+    <div class="quiz-q-word" id="quiz-word">Router</div>
+    <div class="quiz-q-sub" id="quiz-word-en">router</div>
+  </div>
+  <div class="quiz-options" id="quiz-options"></div>
+  <button class="quiz-next" id="quiz-next" onclick="nextQuestion()">سوال بعدی ←</button>
+  <div class="quiz-result" id="quiz-result" style="display:none">
+    <div class="result-emoji" id="res-emoji">🎉</div>
+    <div class="result-title" id="res-title">عالی!</div>
+    <div class="result-score" id="res-score">8/10</div>
+    <div class="result-sub" id="res-sub">نتیجه آزمون</div>
+    <div class="result-xp" id="res-xp">+50 XP</div>
+    <div class="result-btns">
+      <button class="result-btn primary" onclick="retryQuiz()">دوباره</button>
+      <button class="result-btn secondary" onclick="goHome()">خانه</button>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="favorites">
+  <div class="fav-header">
+    <div class="back-btn" onclick="goHome()" style="display:inline-flex;margin-bottom:12px">←</div>
+    <div class="fav-title">⭐ علاقه‌مندی‌ها</div>
+  </div>
+  <div id="fav-content"></div>
+</div>
+
+<div class="bottom-nav">
+  <div class="nav-item active" id="nav-home" onclick="goHome()"><div class="nav-icon">🏠</div><div class="nav-label">خانه</div></div>
+  <div class="nav-item" id="nav-quiz" onclick="goQuiz()"><div class="nav-icon">🧠</div><div class="nav-label">آزمون</div></div>
+  <div class="nav-item" id="nav-fav" onclick="showFavorites()"><div class="nav-icon">⭐</div><div class="nav-label">علاقه‌مندی</div></div>
+</div>
+<div class="xp-toast" id="xp-toast">+10 XP 🎉</div>
+
+<script>
+const VOCAB={
+network:{name:'Netzwerk',fa:'شبکه',icon:'🌐',color:'#00d4ff',words:[
+{de:'Router',en:'router',fa:'روتر - دستگاه مسیریابی شبکه'},
+{de:'Switch',en:'switch',fa:'سوئیچ - اتصال دستگاه‌های شبکه'},
+{de:'IP-Adresse',en:'IP address',fa:'آدرس IP - شناسه دستگاه در شبکه'},
+{de:'Firewall',en:'firewall',fa:'فایروال - محافظ شبکه'},
+{de:'WLAN',en:'WiFi / wireless LAN',fa:'وای‌فای - شبکه بی‌سیم'},
+{de:'Protokoll',en:'protocol',fa:'پروتکل - قانون ارتباط شبکه'},
+{de:'Server',en:'server',fa:'سرور - رایانه خدمات‌دهنده'},
+{de:'Client',en:'client',fa:'کلاینت - رایانه استفاده‌کننده'},
+{de:'DNS',en:'domain name system',fa:'DNS - سیستم نام دامنه'},
+{de:'VPN',en:'virtual private network',fa:'VPN - شبکه خصوصی مجازی'},
+{de:'Bandbreite',en:'bandwidth',fa:'پهنای باند - سرعت انتقال داده'},
+{de:'Subnetz',en:'subnet',fa:'زیرشبکه'},
+{de:'Gateway',en:'gateway',fa:'گیت‌وی - دروازه شبکه'},
+{de:'Ping',en:'ping',fa:'پینگ - تست اتصال شبکه'},
+{de:'MAC-Adresse',en:'MAC address',fa:'آدرس MAC - شناسه فیزیکی کارت شبکه'},
+{de:'DHCP',en:'dynamic host configuration protocol',fa:'DHCP - تخصیص خودکار IP'},
+{de:'TCP/IP',en:'transmission control protocol',fa:'TCP/IP - پروتکل اصلی اینترنت'},
+{de:'HTTP',en:'hypertext transfer protocol',fa:'HTTP - پروتکل انتقال وب'},
+{de:'HTTPS',en:'HTTP secure',fa:'HTTPS - پروتکل امن وب'},
+{de:'FTP',en:'file transfer protocol',fa:'FTP - پروتکل انتقال فایل'},
+{de:'SSH',en:'secure shell',fa:'SSH - اتصال امن از راه دور'},
+{de:'LAN',en:'local area network',fa:'LAN - شبکه محلی'},
+{de:'WAN',en:'wide area network',fa:'WAN - شبکه گسترده'},
+{de:'Modem',en:'modem',fa:'مودم - اتصال به اینترنت'},
+{de:'Port',en:'port',fa:'پورت - درگاه ارتباطی'},
+{de:'Routing',en:'routing',fa:'روتینگ - مسیریابی داده'},
+{de:'Latenz',en:'latency',fa:'لیتنسی - تأخیر در شبکه'},
+{de:'Upload',en:'upload',fa:'آپلود - ارسال داده'},
+{de:'Download',en:'download',fa:'دانلود - دریافت داده'},
+{de:'IPv4',en:'internet protocol version 4',fa:'IPv4 - نسخه ۴ پروتکل اینترنت'},
+{de:'IPv6',en:'internet protocol version 6',fa:'IPv6 - نسخه ۶ پروتکل اینترنت'},
+{de:'Netzwerkadapter',en:'network adapter',fa:'کارت شبکه'},
+{de:'Signalstärke',en:'signal strength',fa:'قدرت سیگنال'},
+{de:'Proxy',en:'proxy server',fa:'پروکسی - سرور واسط'},
+{de:'Hub',en:'hub',fa:'هاب - توزیع‌کننده شبکه قدیمی'},
+{de:'Access Point',en:'access point',fa:'اکسس پوینت - نقطه دسترسی وای‌فای'},
+{de:'Repeater',en:'repeater',fa:'ریپیتر - تقویت سیگنال'},
+{de:'VLAN',en:'virtual local area network',fa:'VLAN - شبکه محلی مجازی'},
+{de:'Verbindung',en:'connection',fa:'کانکشن - اتصال'},
+{de:'Netzwerkgeschwindigkeit',en:'network speed',fa:'سرعت شبکه'},
+]},
+hardware:{name:'Hardware',fa:'سخت‌افزار',icon:'💻',color:'#f59e0b',words:[
+{de:'Prozessor',en:'processor / CPU',fa:'پردازنده - مغز رایانه'},
+{de:'Arbeitsspeicher',en:'RAM',fa:'RAM - حافظه موقت'},
+{de:'Festplatte',en:'hard drive / HDD',fa:'هارد دیسک - حافظه دائمی'},
+{de:'SSD',en:'solid state drive',fa:'SSD - حافظه جامد سریع‌تر'},
+{de:'Grafikkarte',en:'graphics card / GPU',fa:'کارت گرافیک - GPU'},
+{de:'Mainboard',en:'motherboard',fa:'مادربرد - برد اصلی'},
+{de:'Netzteil',en:'power supply unit',fa:'منبع تغذیه - PSU'},
+{de:'Monitor',en:'monitor / display',fa:'مانیتور - نمایشگر'},
+{de:'Tastatur',en:'keyboard',fa:'کیبورد - صفحه‌کلید'},
+{de:'Maus',en:'mouse',fa:'ماوس'},
+{de:'Drucker',en:'printer',fa:'پرینتر - چاپگر'},
+{de:'Scanner',en:'scanner',fa:'اسکنر'},
+{de:'USB-Stick',en:'USB flash drive',fa:'فلش USB'},
+{de:'Lüfter',en:'fan / cooler',fa:'فن - خنک‌کننده'},
+{de:'Gehäuse',en:'computer case',fa:'کیس - محفظه رایانه'},
+{de:'Webcam',en:'webcam',fa:'وبکم - دوربین'},
+{de:'Mikrofon',en:'microphone',fa:'میکروفون'},
+{de:'Lautsprecher',en:'speaker',fa:'بلندگو'},
+{de:'Touchscreen',en:'touchscreen',fa:'صفحه لمسی'},
+{de:'Laptop',en:'laptop',fa:'لپ‌تاپ'},
+{de:'BIOS',en:'basic input/output system',fa:'BIOS - سیستم پایه راه‌اندازی'},
+{de:'HDMI',en:'HDMI port',fa:'پورت HDMI - تصویر و صدا'},
+{de:'USB-Anschluss',en:'USB port',fa:'پورت USB'},
+{de:'Externe Festplatte',en:'external hard drive',fa:'هارد اکسترنال'},
+{de:'Taktfrequenz',en:'clock speed / GHz',fa:'گیگاهرتز - سرعت پردازنده'},
+{de:'Kernanzahl',en:'number of cores',fa:'تعداد هسته پردازنده'},
+{de:'Cache',en:'cache memory',fa:'حافظه کش - سریع‌ترین حافظه'},
+{de:'Auflösung',en:'screen resolution',fa:'رزولوشن - وضوح تصویر'},
+{de:'Kühlkörper',en:'heat sink',fa:'هیت‌سینک - خنک‌کننده'},
+{de:'Akku',en:'battery',fa:'باتری'},
+{de:'Erweiterungskarte',en:'expansion card',fa:'کارت توسعه'},
+{de:'RAM-Steckplatz',en:'RAM slot',fa:'اسلات RAM'},
+{de:'DisplayPort',en:'display port',fa:'پورت DisplayPort'},
+{de:'Datenkabel',en:'data cable',fa:'کابل داده'},
+{de:'Grafikspeicher',en:'VRAM',fa:'VRAM - حافظه کارت گرافیک'},
+{de:'Desktop-PC',en:'desktop computer',fa:'رایانه رومیزی'},
+{de:'Tablet',en:'tablet',fa:'تبلت'},
+{de:'Netzbuchse',en:'power socket',fa:'پریز برق'},
+{de:'PCIe-Steckplatz',en:'PCIe slot',fa:'اسلات PCIe'},
+{de:'Überhitzung',en:'overheating',fa:'داغ شدن بیش از حد'},
+]},
+software:{name:'Software',fa:'نرم‌افزار',icon:'⚙️',color:'#7c3aed',words:[
+{de:'Betriebssystem',en:'operating system',fa:'سیستم‌عامل - مثل Windows'},
+{de:'Programm',en:'program / application',fa:'برنامه - نرم‌افزار'},
+{de:'Browser',en:'browser',fa:'مرورگر اینترنت'},
+{de:'Datei',en:'file',fa:'فایل'},
+{de:'Ordner',en:'folder / directory',fa:'پوشه - فولدر'},
+{de:'Installation',en:'installation',fa:'نصب برنامه'},
+{de:'Update',en:'update',fa:'به‌روزرسانی'},
+{de:'Backup',en:'backup',fa:'نسخه پشتیبان'},
+{de:'Algorithmus',en:'algorithm',fa:'الگوریتم - روش حل مسئله'},
+{de:'Quellcode',en:'source code',fa:'کد منبع'},
+{de:'Compiler',en:'compiler',fa:'کامپایلر - مترجم کد'},
+{de:'Bug',en:'bug / error',fa:'باگ - خطا در برنامه'},
+{de:'Lizenz',en:'license',fa:'لایسنس - مجوز استفاده'},
+{de:'Open Source',en:'open source',fa:'متن‌باز - کد آزاد'},
+{de:'Plugin',en:'plugin',fa:'پلاگین - افزونه'},
+{de:'Framework',en:'framework',fa:'فریم‌ورک - چارچوب توسعه'},
+{de:'Version',en:'version',fa:'نسخه'},
+{de:'Patch',en:'patch',fa:'پچ - رفع باگ'},
+{de:'Debug',en:'debug',fa:'دیباگ - رفع اشکال'},
+{de:'Deployment',en:'deployment',fa:'دیپلوی - استقرار نرم‌افزار'},
+{de:'Konfiguration',en:'configuration',fa:'پیکربندی - تنظیمات'},
+{de:'Variable',en:'variable',fa:'متغیر'},
+{de:'Funktion',en:'function',fa:'تابع'},
+{de:'Klasse',en:'class',fa:'کلاس - در برنامه‌نویسی'},
+{de:'Schleife',en:'loop',fa:'حلقه - تکرار در کد'},
+{de:'Bedingung',en:'condition',fa:'شرط - if/else'},
+{de:'Array',en:'array',fa:'آرایه - لیست داده'},
+{de:'Versionskontrolle',en:'version control',fa:'کنترل نسخه - Git'},
+{de:'Repository',en:'repository',fa:'ریپازیتوری - مخزن کد'},
+{de:'Wartung',en:'maintenance',fa:'نگهداری نرم‌افزار'},
+{de:'Migration',en:'migration',fa:'مهاجرت - انتقال داده'},
+{de:'REST-API',en:'REST API',fa:'REST API - ارتباط سرویس‌ها'},
+{de:'JSON',en:'JSON',fa:'JSON - فرمت تبادل داده'},
+{de:'HTML',en:'hypertext markup language',fa:'HTML - زبان ساخت وب'},
+{de:'CSS',en:'cascading style sheets',fa:'CSS - طراحی صفحات وب'},
+{de:'JavaScript',en:'javascript',fa:'جاوااسکریپت - زبان وب'},
+{de:'Python',en:'python',fa:'پایتون - زبان برنامه‌نویسی'},
+{de:'CI/CD',en:'continuous integration/delivery',fa:'CI/CD - یکپارچه‌سازی مداوم'},
+{de:'Agile',en:'agile',fa:'اجایل - روش توسعه چابک'},
+{de:'Scrum',en:'scrum',fa:'اسکرام - روش مدیریت پروژه'},
+]},
+security:{name:'Sicherheit',fa:'امنیت',icon:'🔐',color:'#ef4444',words:[
+{de:'Passwort',en:'password',fa:'رمز عبور'},
+{de:'Verschlüsselung',en:'encryption',fa:'رمزگذاری داده‌ها'},
+{de:'Virus',en:'virus',fa:'ویروس - برنامه مخرب'},
+{de:'Malware',en:'malware',fa:'بدافزار'},
+{de:'Phishing',en:'phishing',fa:'فیشینگ - کلاهبرداری آنلاین'},
+{de:'Authentifizierung',en:'authentication',fa:'احراز هویت'},
+{de:'Datenschutz',en:'data protection',fa:'حفاظت از داده'},
+{de:'Zertifikat',en:'certificate',fa:'گواهینامه دیجیتال'},
+{de:'Hackerangriff',en:'hacker attack',fa:'حمله هکری'},
+{de:'Antivirensoftware',en:'antivirus software',fa:'نرم‌افزار آنتی‌ویروس'},
+{de:'Zwei-Faktor-Authentifizierung',en:'two-factor authentication',fa:'احراز هویت دو مرحله‌ای - 2FA'},
+{de:'Sicherheitslücke',en:'security vulnerability',fa:'حفره امنیتی'},
+{de:'Ransomware',en:'ransomware',fa:'باج‌افزار - قفل کردن فایل‌ها'},
+{de:'Trojaner',en:'trojan',fa:'تروجان - برنامه مخفی مخرب'},
+{de:'DDoS-Angriff',en:'DDoS attack',fa:'حمله DDoS - از کار انداختن سرور'},
+{de:'Social Engineering',en:'social engineering',fa:'مهندسی اجتماعی - فریب انسانی'},
+{de:'SSL/TLS',en:'secure sockets layer',fa:'SSL/TLS - پروتکل امنیت داده'},
+{de:'Biometrie',en:'biometrics',fa:'بیومتریک - اثر انگشت و چهره'},
+{de:'Datenschutz-Grundverordnung',en:'GDPR',fa:'DSGVO - قانون حفاظت از داده اروپا'},
+{de:'Brute-Force-Angriff',en:'brute force attack',fa:'حمله brute force - امتحان همه رمزها'},
+{de:'Zero Trust',en:'zero trust',fa:'Zero Trust - همه باید تأیید شوند'},
+{de:'Honeypot',en:'honeypot',fa:'هانی‌پات - تله برای هکرها'},
+{de:'Datenleck',en:'data breach',fa:'نشت داده'},
+{de:'Digitale Signatur',en:'digital signature',fa:'امضای دیجیتال'},
+{de:'Penetrationstest',en:'penetration test',fa:'تست نفوذ امنیتی'},
+{de:'Sicherheitsaudit',en:'security audit',fa:'ممیزی امنیتی'},
+{de:'Spam',en:'spam',fa:'اسپم - ایمیل‌های ناخواسته'},
+{de:'Spyware',en:'spyware',fa:'جاسوس‌افزار'},
+{de:'Whitelist',en:'whitelist',fa:'لیست سفید - مجاز'},
+{de:'Blacklist',en:'blacklist',fa:'لیست سیاه - مسدود'},
+{de:'Zugangskontrolle',en:'access control',fa:'کنترل دسترسی'},
+{de:'Sicherheitsrichtlinie',en:'security policy',fa:'سیاست امنیتی'},
+{de:'Zugriffsrecht',en:'access right',fa:'حق دسترسی'},
+{de:'Identitätsdiebstahl',en:'identity theft',fa:'سرقت هویت'},
+{de:'Passwort-Manager',en:'password manager',fa:'مدیر رمز عبور'},
+{de:'Endpoint-Sicherheit',en:'endpoint security',fa:'امنیت دستگاه‌های کاربری'},
+{de:'Sicherheitspatch',en:'security patch',fa:'وصله امنیتی'},
+{de:'Netzwerksicherheit',en:'network security',fa:'امنیت شبکه'},
+{de:'Risikobewertung',en:'risk assessment',fa:'ارزیابی ریسک'},
+{de:'Notfallplan',en:'disaster recovery plan',fa:'برنامه بازیابی بعد از فاجعه'},
+]},
+office:{name:'Office & Büro',fa:'اداری',icon:'📁',color:'#10b981',words:[
+{de:'Tabellenkalkulation',en:'spreadsheet',fa:'صفحه گسترده - Excel'},
+{de:'Textverarbeitung',en:'word processing',fa:'پردازش متن - Word'},
+{de:'Präsentation',en:'presentation',fa:'پرزنتیشن - ارائه'},
+{de:'E-Mail',en:'email',fa:'ایمیل - پست الکترونیک'},
+{de:'Anhang',en:'attachment',fa:'پیوست - فایل ضمیمه'},
+{de:'Helpdesk',en:'help desk',fa:'هلپ‌دسک - میز پشتیبانی'},
+{de:'Fehlermeldung',en:'error message',fa:'پیام خطا'},
+{de:'Druckertreiber',en:'printer driver',fa:'درایور پرینتر'},
+{de:'Zwischenablage',en:'clipboard',fa:'کلیپ‌بورد - حافظه کپی'},
+{de:'Verknüpfung',en:'shortcut',fa:'میانبر - شورت‌کات'},
+{de:'Taskleiste',en:'taskbar',fa:'تسک‌بار - نوار وظیفه'},
+{de:'Desktop',en:'desktop',fa:'دسکتاپ - صفحه اصلی'},
+{de:'Aufgaben-Manager',en:'task manager',fa:'Task Manager - مدیر وظایف'},
+{de:'Speichern',en:'save',fa:'ذخیره کردن'},
+{de:'Kopieren',en:'copy',fa:'کپی کردن'},
+{de:'Einfügen',en:'paste',fa:'چسباندن - Paste'},
+{de:'Ausschneiden',en:'cut',fa:'بریدن - Cut'},
+{de:'Rückgängig',en:'undo',fa:'برگشت - Undo'},
+{de:'Suchen',en:'search / find',fa:'جستجو کردن'},
+{de:'Ersetzen',en:'replace',fa:'جایگزینی - Replace'},
+{de:'Schriftart',en:'font',fa:'فونت - نوع خط'},
+{de:'Tabelle',en:'table',fa:'جدول'},
+{de:'Diagramm',en:'diagram / chart',fa:'نمودار - چارت'},
+{de:'Formel',en:'formula',fa:'فرمول در Excel'},
+{de:'Zelle',en:'cell',fa:'سلول در Excel'},
+{de:'Filter',en:'filter',fa:'فیلتر'},
+{de:'Sortieren',en:'sort',fa:'مرتب کردن - Sort'},
+{de:'PDF erstellen',en:'create PDF',fa:'ساختن فایل PDF'},
+{de:'Makro',en:'macro',fa:'ماکرو - اتوماسیون در Office'},
+{de:'Vorlage',en:'template',fa:'قالب - Template'},
+{de:'Treiber',en:'driver',fa:'درایور - نرم‌افزار سخت‌افزار'},
+{de:'Systemsteuerung',en:'control panel',fa:'کنترل پنل ویندوز'},
+{de:'Netzlaufwerk',en:'network drive',fa:'درایو شبکه - فضای مشترک'},
+{de:'Drucken',en:'print',fa:'چاپ کردن - Print'},
+{de:'Kommentar',en:'comment',fa:'کامنت - توضیح'},
+{de:'Überarbeitung',en:'track changes',fa:'پیگیری تغییرات'},
+{de:'Benutzeroberfläche',en:'user interface',fa:'رابط کاربری - UI'},
+{de:'Startmenü',en:'start menu',fa:'منوی استارت'},
+{de:'Formatieren',en:'format',fa:'قالب‌بندی - Format'},
+{de:'Seriennummer',en:'serial number',fa:'شماره سریال'},
+]},
+system:{name:'Systemadmin',fa:'سیستم',icon:'🖥️',color:'#8b5cf6',words:[
+{de:'Administrator',en:'administrator',fa:'ادمین - مدیر سیستم'},
+{de:'Benutzer',en:'user',fa:'یوزر - کاربر'},
+{de:'Berechtigungen',en:'permissions',fa:'مجوزها - پرمیشن‌ها'},
+{de:'Kommandozeile',en:'command line',fa:'خط فرمان - CMD'},
+{de:'Skript',en:'script',fa:'اسکریپت - فایل دستوری'},
+{de:'Prozess',en:'process',fa:'پروسس - فرآیند در حال اجرا'},
+{de:'Dienst',en:'service',fa:'سرویس - خدمات سیستمی'},
+{de:'Protokolldatei',en:'log file',fa:'لاگ فایل - گزارش سیستم'},
+{de:'Virtualisierung',en:'virtualization',fa:'مجازی‌سازی'},
+{de:'Cloud',en:'cloud',fa:'کلاد - فضای ابری'},
+{de:'Container',en:'container',fa:'کانتینر - Docker'},
+{de:'Systemstart',en:'system boot',fa:'بوت - راه‌اندازی سیستم'},
+{de:'Herunterfahren',en:'shutdown',fa:'خاموش کردن سیستم'},
+{de:'Neustart',en:'restart / reboot',fa:'ری‌استارت - راه‌اندازی مجدد'},
+{de:'Active Directory',en:'active directory',fa:'اکتیو دایرکتوری - مدیریت کاربران'},
+{de:'Domain',en:'domain',fa:'دامین - دامنه'},
+{de:'Monitoring',en:'monitoring',fa:'مانیتورینگ - پایش سیستم'},
+{de:'Incident',en:'incident',fa:'اینسیدنت - رویداد IT'},
+{de:'Ticketsystem',en:'ticketing system',fa:'سیستم تیکت - ثبت مشکلات'},
+{de:'Remote-Zugriff',en:'remote access',fa:'ریموت اکسس - دسترسی از راه دور'},
+{de:'PowerShell',en:'powershell',fa:'پاورشل - ابزار دستوری ویندوز'},
+{de:'Bash',en:'bash',fa:'باش - خط فرمان لینوکس'},
+{de:'Linux',en:'linux',fa:'لینوکس - سیستم‌عامل متن‌باز'},
+{de:'Windows Server',en:'windows server',fa:'ویندوز سرور'},
+{de:'RAID',en:'RAID',fa:'RAID - ترکیب هاردها'},
+{de:'Snapshot',en:'snapshot',fa:'اسنپ‌شات - تصویر لحظه‌ای سیستم'},
+{de:'Hochverfügbarkeit',en:'high availability',fa:'دسترس‌پذیری بالا - HA'},
+{de:'Lastverteilung',en:'load balancing',fa:'لودبالانسینگ - توازن بار'},
+{de:'Failover',en:'failover',fa:'فیل‌اور - جابجایی خودکار'},
+{de:'SLA',en:'service level agreement',fa:'SLA - توافق سطح خدمات'},
+{de:'Uptime',en:'uptime',fa:'آپ‌تایم - زمان کارکرد سیستم'},
+{de:'Downtime',en:'downtime',fa:'داون‌تایم - زمان خرابی سیستم'},
+{de:'Automatisierung',en:'automation',fa:'اتوماسیون - خودکارسازی'},
+{de:'Patch-Management',en:'patch management',fa:'مدیریت پچ‌ها'},
+{de:'Gruppenrichtlinie',en:'group policy',fa:'Group Policy - سیاست گروهی'},
+{de:'Festplattenpartition',en:'disk partition',fa:'پارتیشن هارد'},
+{de:'Dateisystem',en:'file system',fa:'سیستم فایل - NTFS, ext4'},
+{de:'Disaster Recovery',en:'disaster recovery',fa:'بازیابی پس از فاجعه - DR'},
+{de:'Wartungsfenster',en:'maintenance window',fa:'بازه زمانی تعمیر'},
+{de:'Eskalation',en:'escalation',fa:'اسکالیشن - ارجاع به سطح بالاتر'},
+]},
+programming:{name:'Programmierung',fa:'برنامه‌نویسی',icon:'👨‍💻',color:'#06b6d4',words:[
+{de:'Variable',en:'variable',fa:'متغیر - ظرف نگهداری داده'},
+{de:'Funktion',en:'function',fa:'تابع - بلوک کد قابل استفاده مجدد'},
+{de:'Klasse',en:'class',fa:'کلاس - الگو برای اشیاء'},
+{de:'Objekt',en:'object',fa:'آبجکت - نمونه از یک کلاس'},
+{de:'Schleife',en:'loop',fa:'حلقه - تکرار کد'},
+{de:'Bedingung',en:'condition / if-else',fa:'شرط - if/else'},
+{de:'Array',en:'array',fa:'آرایه - لیست مرتب داده'},
+{de:'String',en:'string',fa:'استرینگ - رشته متنی'},
+{de:'Integer',en:'integer',fa:'عدد صحیح'},
+{de:'Boolean',en:'boolean',fa:'بولین - درست یا غلط'},
+{de:'Methode',en:'method',fa:'متد - تابع درون کلاس'},
+{de:'Parameter',en:'parameter',fa:'پارامتر - ورودی تابع'},
+{de:'Vererbung',en:'inheritance',fa:'ارث‌بری - OOP'},
+{de:'Interface',en:'interface',fa:'اینترفیس - قرارداد'},
+{de:'Rekursion',en:'recursion',fa:'ریکرشن - تابعی که خودش را صدا می‌زند'},
+{de:'Stack',en:'stack',fa:'استک - پشته LIFO'},
+{de:'Queue',en:'queue',fa:'کیو - صف FIFO'},
+{de:'Debugging',en:'debugging',fa:'دیباگینگ - رفع اشکال کد'},
+{de:'Refactoring',en:'refactoring',fa:'ریفکتورینگ - بهبود کد'},
+{de:'Unit-Test',en:'unit test',fa:'یونیت تست'},
+{de:'Git',en:'Git',fa:'گیت - کنترل نسخه'},
+{de:'Syntax',en:'syntax',fa:'سینتکس - قواعد نوشتن کد'},
+{de:'Laufzeitfehler',en:'runtime error',fa:'خطای زمان اجرا'},
+{de:'Kompilierungsfehler',en:'compilation error',fa:'خطای کامپایل'},
+{de:'OOP',en:'object-oriented programming',fa:'OOP - برنامه‌نویسی شیءگرا'},
+{de:'MVC',en:'model-view-controller',fa:'MVC - معماری نرم‌افزار'},
+{de:'Designmuster',en:'design pattern',fa:'الگوی طراحی - Design Pattern'},
+{de:'Komplexität',en:'complexity',fa:'پیچیدگی - O notation'},
+{de:'Kommentar',en:'comment',fa:'کامنت - توضیح در کد'},
+{de:'Einrückung',en:'indentation',fa:'ایندنتیشن - تورفتگی کد'},
+{de:'Rückgabewert',en:'return value',fa:'مقدار برگشتی'},
+{de:'Ausnahmebehandlung',en:'exception handling',fa:'مدیریت استثنا - Exception'},
+{de:'Kapselung',en:'encapsulation',fa:'کپسوله‌سازی - Encapsulation'},
+{de:'Abstraktion',en:'abstraction',fa:'انتزاع - Abstraction'},
+{de:'Polymorphismus',en:'polymorphism',fa:'چندریختی - Polymorphism'},
+{de:'Binärbaum',en:'binary tree',fa:'درخت باینری'},
+{de:'Hash-Tabelle',en:'hash table',fa:'جدول هش'},
+{de:'Sortieralgorithmus',en:'sorting algorithm',fa:'الگوریتم مرتب‌سازی'},
+{de:'Suchalgorithmus',en:'search algorithm',fa:'الگوریتم جستجو'},
+{de:'XML',en:'XML',fa:'XML - زبان نشانه‌گذاری'},
+]},
+database:{name:'Datenbank',fa:'پایگاه داده',icon:'🗄️',color:'#f97316',words:[
+{de:'Datenbank',en:'database',fa:'دیتابیس - پایگاه داده'},
+{de:'Tabelle',en:'table',fa:'تیبل - جدول در دیتابیس'},
+{de:'Datensatz',en:'record / row',fa:'رکورد - ردیف داده'},
+{de:'Feld',en:'field / column',fa:'فیلد - ستون'},
+{de:'Primärschlüssel',en:'primary key',fa:'کلید اصلی - شناسه منحصربه‌فرد'},
+{de:'Fremdschlüssel',en:'foreign key',fa:'کلید خارجی - ارتباط بین جداول'},
+{de:'Index',en:'index',fa:'ایندکس - سرعت جستجو'},
+{de:'Abfrage',en:'query',fa:'کوئری - جستجو در دیتابیس'},
+{de:'SQL',en:'structured query language',fa:'SQL - زبان کار با دیتابیس'},
+{de:'SELECT',en:'SELECT statement',fa:'SELECT - دستور انتخاب داده'},
+{de:'INSERT',en:'INSERT statement',fa:'INSERT - دستور افزودن داده'},
+{de:'UPDATE',en:'UPDATE statement',fa:'UPDATE - دستور به‌روزرسانی'},
+{de:'DELETE',en:'DELETE statement',fa:'DELETE - دستور حذف داده'},
+{de:'JOIN',en:'JOIN',fa:'JOIN - پیوند جداول'},
+{de:'WHERE',en:'WHERE clause',fa:'WHERE - شرط در کوئری'},
+{de:'Transaktion',en:'transaction',fa:'تراکنش - مجموعه عملیات'},
+{de:'Normalisierung',en:'normalization',fa:'نرمال‌سازی دیتابیس'},
+{de:'MySQL',en:'MySQL',fa:'MySQL - محبوب‌ترین دیتابیس متن‌باز'},
+{de:'PostgreSQL',en:'PostgreSQL',fa:'PostgreSQL - دیتابیس قدرتمند'},
+{de:'MongoDB',en:'MongoDB',fa:'MongoDB - دیتابیس NoSQL'},
+{de:'NoSQL',en:'NoSQL database',fa:'NoSQL - دیتابیس غیررابطه‌ای'},
+{de:'Datenbankschema',en:'database schema',fa:'اسکیما - طرح دیتابیس'},
+{de:'Stored Procedure',en:'stored procedure',fa:'رویه ذخیره‌شده'},
+{de:'Trigger',en:'trigger',fa:'تریگر - اجرای خودکار'},
+{de:'View',en:'view',fa:'ویو - کوئری ذخیره‌شده'},
+{de:'Constraint',en:'constraint',fa:'کانستریِنت - محدودیت داده'},
+{de:'NULL',en:'NULL value',fa:'NULL - مقدار خالی'},
+{de:'Datentyp',en:'data type',fa:'نوع داده - Data Type'},
+{de:'Datenbankoptimierung',en:'database optimization',fa:'بهینه‌سازی دیتابیس'},
+{de:'DBA',en:'database administrator',fa:'DBA - مدیر دیتابیس'},
+{de:'ERD',en:'entity relationship diagram',fa:'ERD - نمودار ارتباط موجودیت‌ها'},
+{de:'ETL',en:'extract, transform, load',fa:'ETL - استخراج، تبدیل، بارگذاری'},
+{de:'Data Warehouse',en:'data warehouse',fa:'انبار داده'},
+{de:'Big Data',en:'big data',fa:'Big Data - داده‌های بزرگ'},
+{de:'Replikation',en:'replication',fa:'ریپلیکیشن - تکثیر دیتابیس'},
+{de:'Backup',en:'database backup',fa:'بکاپ دیتابیس'},
+{de:'Cache',en:'cache',fa:'کش - ذخیره موقت برای سرعت'},
+{de:'ORM',en:'object-relational mapping',fa:'ORM - نگاشت شیء به دیتابیس'},
+{de:'Sharding',en:'sharding',fa:'شاردینگ - تقسیم دیتابیس'},
+{de:'Abfrageoptimierung',en:'query optimization',fa:'بهینه‌سازی کوئری'},
+]},
+cloud:{name:'Cloud & DevOps',fa:'کلود و دواپس',icon:'☁️',color:'#3b82f6',words:[
+{de:'Cloud-Computing',en:'cloud computing',fa:'رایانش ابری - Cloud Computing'},
+{de:'IaaS',en:'infrastructure as a service',fa:'IaaS - زیرساخت به‌عنوان سرویس'},
+{de:'PaaS',en:'platform as a service',fa:'PaaS - پلتفرم به‌عنوان سرویس'},
+{de:'SaaS',en:'software as a service',fa:'SaaS - نرم‌افزار به‌عنوان سرویس'},
+{de:'AWS',en:'Amazon Web Services',fa:'AWS - سرویس ابری آمازون'},
+{de:'Azure',en:'Microsoft Azure',fa:'Azure - سرویس ابری مایکروسافت'},
+{de:'Google Cloud',en:'Google Cloud Platform',fa:'GCP - سرویس ابری گوگل'},
+{de:'Docker',en:'Docker',fa:'داکر - کانتینرسازی'},
+{de:'Kubernetes',en:'Kubernetes / K8s',fa:'کوبرنتیز - مدیریت کانتینرها'},
+{de:'Container',en:'container',fa:'کانتینر - محیط اجرای ایزوله'},
+{de:'Microservice',en:'microservice',fa:'میکروسرویس'},
+{de:'CI/CD',en:'continuous integration and delivery',fa:'CI/CD - یکپارچه‌سازی مداوم'},
+{de:'Pipeline',en:'pipeline',fa:'پایپ‌لاین - خط لوله توسعه'},
+{de:'Infrastructure as Code',en:'infrastructure as code',fa:'IaC - زیرساخت به‌عنوان کد'},
+{de:'Terraform',en:'Terraform',fa:'تراه‌فورم - ابزار IaC'},
+{de:'Ansible',en:'Ansible',fa:'انسیبل - ابزار اتوماسیون'},
+{de:'Jenkins',en:'Jenkins',fa:'جنکینز - سرور CI/CD'},
+{de:'DevOps',en:'DevOps',fa:'دواپس - همکاری توسعه و عملیات'},
+{de:'Skalierung',en:'scaling',fa:'اسکیلینگ - مقیاس‌پذیری'},
+{de:'Load Balancer',en:'load balancer',fa:'لودبالانسر - متعادل‌کننده بار'},
+{de:'CDN',en:'content delivery network',fa:'CDN - شبکه توزیع محتوا'},
+{de:'Serverless',en:'serverless',fa:'سرورلس - بدون سرور'},
+{de:'Hybrid Cloud',en:'hybrid cloud',fa:'ابر ترکیبی'},
+{de:'Monitoring',en:'monitoring',fa:'مانیتورینگ - پایش سیستم'},
+{de:'Rollback',en:'rollback',fa:'رول‌بک - بازگشت به نسخه قبل'},
+{de:'Cluster',en:'cluster',fa:'کلاستر - خوشه سرورها'},
+{de:'Node',en:'node',fa:'نود - یک عضو خوشه'},
+{de:'API Gateway',en:'API gateway',fa:'API Gateway - دروازه API'},
+{de:'Registry',en:'registry',fa:'رجیستری - مخزن ایمیج'},
+{de:'Helm',en:'Helm',fa:'هلم - مدیر بسته Kubernetes'},
+{de:'Observability',en:'observability',fa:'مشاهده‌پذیری سیستم'},
+{de:'GitLab',en:'GitLab',fa:'گیت‌لب - مخزن کد'},
+{de:'GitHub',en:'GitHub',fa:'گیت‌هاب - مخزن کد'},
+{de:'SRE',en:'site reliability engineering',fa:'SRE - مهندسی قابلیت اطمینان'},
+{de:'Incident Management',en:'incident management',fa:'مدیریت حوادث IT'},
+{de:'Rollout',en:'rollout',fa:'رول‌اوت - استقرار تدریجی'},
+{de:'Pod',en:'pod',fa:'پاد - کوچک‌ترین واحد Kubernetes'},
+{de:'Namespace',en:'namespace',fa:'نیم‌اسپیس - فضای نام'},
+{de:'Message Queue',en:'message queue',fa:'صف پیام - Message Queue'},
+{de:'Auto-Scaling',en:'auto-scaling',fa:'اتواسکیلینگ - مقیاس‌بندی خودکار'},
+{de:'Event-Driven',en:'event-driven',fa:'رویدادمحور - Event-Driven'},
+]},
+ausbildung:{name:'Ausbildung',fa:'آموزش و شغل',icon:'🎓',color:'#ec4899',words:[
+{de:'Ausbildung',en:'apprenticeship / vocational training',fa:'آوسبیلدونگ - دوره آموزشی حرفه‌ای'},
+{de:'Berufsschule',en:'vocational school',fa:'مدرسه حرفه‌ای'},
+{de:'Ausbildungsbetrieb',en:'training company',fa:'شرکت آموزش‌دهنده'},
+{de:'Ausbilder',en:'trainer / instructor',fa:'مربی آموزشی'},
+{de:'Azubi',en:'trainee / apprentice',fa:'آزوبی - کارآموز'},
+{de:'Bewerbung',en:'job application',fa:'درخواست کار - Bewerbung'},
+{de:'Lebenslauf',en:'CV / curriculum vitae',fa:'لبنس‌لاوف - رزومه'},
+{de:'Anschreiben',en:'cover letter',fa:'آنشرایبن - نامه معرفی'},
+{de:'Vorstellungsgespräch',en:'job interview',fa:'فورشتلونگ‌گشپرخ - مصاحبه شغلی'},
+{de:'Praktikum',en:'internship',fa:'پراکتیکوم - کارآموزی'},
+{de:'Prüfung',en:'exam',fa:'پروفونگ - آزمون'},
+{de:'Abschlussprüfung',en:'final exam',fa:'آزمون نهایی'},
+{de:'Zeugnis',en:'certificate / report card',fa:'تسویس - مدرک تحصیلی'},
+{de:'IHK',en:'chamber of commerce and industry',fa:'IHK - اتاق بازرگانی آلمان'},
+{de:'Gehalt',en:'salary',fa:'گحالت - حقوق'},
+{de:'Vergütung',en:'remuneration',fa:'مزد دوران آموزش'},
+{de:'Urlaub',en:'vacation',fa:'اورلاوب - تعطیلات و مرخصی'},
+{de:'Arbeitszeit',en:'working hours',fa:'ساعت کاری'},
+{de:'Überstunden',en:'overtime',fa:'اضافه‌کاری'},
+{de:'Abteilung',en:'department',fa:'آبتایلونگ - دپارتمان'},
+{de:'Kollege',en:'colleague',fa:'کولگه - همکار'},
+{de:'Vorgesetzter',en:'supervisor / manager',fa:'مافوق - مدیر'},
+{de:'Mitarbeiter',en:'employee',fa:'میتاربایتر - کارمند'},
+{de:'IT-Fachinformatiker',en:'IT specialist',fa:'متخصص IT - Fachinformatiker'},
+{de:'Anwendungsentwicklung',en:'application development',fa:'توسعه نرم‌افزار'},
+{de:'Systemintegration',en:'system integration',fa:'یکپارچه‌سازی سیستم'},
+{de:'Arbeitsvertrag',en:'employment contract',fa:'قرارداد کار'},
+{de:'Probezeit',en:'probation period',fa:'دوره آزمایشی'},
+{de:'Weiterbildung',en:'further training',fa:'آموزش تکمیلی'},
+{de:'Zertifizierung',en:'certification',fa:'گواهینامه تخصصی'},
+{de:'ITIL',en:'IT infrastructure library',fa:'ITIL - چارچوب مدیریت خدمات IT'},
+{de:'CompTIA',en:'CompTIA certification',fa:'CompTIA - گواهینامه IT'},
+{de:'Nettolohn',en:'net salary',fa:'حقوق خالص پس از مالیات'},
+{de:'Bruttolohn',en:'gross salary',fa:'حقوق ناخالص قبل از مالیات'},
+{de:'Lohnabrechnung',en:'payslip',fa:'فیش حقوقی'},
+{de:'Steuer',en:'tax',fa:'مالیات'},
+{de:'Krankenversicherung',en:'health insurance',fa:'بیمه درمانی'},
+{de:'Sozialversicherung',en:'social insurance',fa:'بیمه اجتماعی'},
+{de:'Rentenversicherung',en:'pension insurance',fa:'بیمه بازنشستگی'},
+{de:'Kündigung',en:'termination / resignation',fa:'اخراج یا استعفا'},
+]},
+daily:{name:'Alltagsgespräche',fa:'جملات روزمره',icon:'💬',color:'#14b8a6',words:[
+{de:'Der Server ist ausgefallen.',en:'The server is down.',fa:'سرور از کار افتاده.'},
+{de:'Das Netzwerk ist langsam.',en:'The network is slow.',fa:'شبکه کند است.'},
+{de:'Ich muss das System neu starten.',en:'I need to restart the system.',fa:'باید سیستم را ری‌استارت کنم.'},
+{de:'Haben Sie Ihr Passwort vergessen?',en:'Did you forget your password?',fa:'رمز عبورت را فراموش کردی؟'},
+{de:'Ich installiere das Update.',en:'I am installing the update.',fa:'دارم آپدیت نصب می‌کنم.'},
+{de:'Bitte starten Sie Ihren Computer neu.',en:'Please restart your computer.',fa:'لطفاً رایانه را ری‌استارت کنید.'},
+{de:'Der Drucker funktioniert nicht.',en:'The printer is not working.',fa:'پرینتر کار نمی‌کند.'},
+{de:'Ich öffne ein Ticket.',en:'I am opening a ticket.',fa:'دارم تیکت باز می‌کنم.'},
+{de:'Das Problem ist gelöst.',en:'The problem is solved.',fa:'مشکل حل شد.'},
+{de:'Ich schaue mir das an.',en:'I will look into it.',fa:'بررسی می‌کنم.'},
+{de:'Die Verbindung ist getrennt.',en:'The connection is lost.',fa:'اتصال قطع شده است.'},
+{de:'Ich prüfe die Fehlermeldung.',en:'I am checking the error message.',fa:'پیام خطا را بررسی می‌کنم.'},
+{de:'Das Backup läuft.',en:'The backup is running.',fa:'پشتیبان‌گیری در حال انجام است.'},
+{de:'Der Speicher ist voll.',en:'The storage is full.',fa:'حافظه پر شده است.'},
+{de:'Ich verbinde mich per VPN.',en:'I am connecting via VPN.',fa:'دارم از طریق VPN وصل می‌شوم.'},
+{de:'Das System wird aktualisiert.',en:'The system is being updated.',fa:'سیستم در حال به‌روزرسانی است.'},
+{de:'Ich habe keinen Internetzugang.',en:'I have no internet access.',fa:'دسترسی به اینترنت ندارم.'},
+{de:'Das Programm stürzt ab.',en:'The program is crashing.',fa:'برنامه کرش می‌کند.'},
+{de:'Ich installiere den Treiber.',en:'I am installing the driver.',fa:'دارم درایور نصب می‌کنم.'},
+{de:'Die Firewall blockiert die Verbindung.',en:'The firewall is blocking the connection.',fa:'فایروال اتصال را مسدود می‌کند.'},
+{de:'Das WLAN-Signal ist schwach.',en:'The WiFi signal is weak.',fa:'سیگنال وای‌فای ضعیف است.'},
+{de:'Ich mache ein Backup.',en:'I am making a backup.',fa:'دارم بکاپ می‌گیرم.'},
+{de:'Der Computer ist langsam.',en:'The computer is slow.',fa:'رایانه کند است.'},
+{de:'Ich ändere das Passwort.',en:'I am changing the password.',fa:'دارم رمز عبور را عوض می‌کنم.'},
+{de:'Die Software ist veraltet.',en:'The software is outdated.',fa:'نرم‌افزار قدیمی است.'},
+{de:'Bitte warten Sie einen Moment.',en:'Please wait a moment.',fa:'لطفاً یک لحظه صبر کنید.'},
+{de:'Das dauert etwa zehn Minuten.',en:'This will take about ten minutes.',fa:'حدود ده دقیقه طول می‌کشد.'},
+{de:'Ich habe das Problem gefunden.',en:'I found the problem.',fa:'مشکل را پیدا کردم.'},
+{de:'Der Fehler liegt in der Konfiguration.',en:'The error is in the configuration.',fa:'خطا در پیکربندی است.'},
+{de:'Bitte schließen Sie das Programm.',en:'Please close the program.',fa:'لطفاً برنامه را ببندید.'},
+{de:'Ich teste die Verbindung.',en:'I am testing the connection.',fa:'دارم اتصال را تست می‌کنم.'},
+{de:'Das Gerät ist nicht erkannt.',en:'The device is not recognized.',fa:'دستگاه شناسایی نمی‌شود.'},
+{de:'Können Sie den Bildschirm teilen?',en:'Can you share your screen?',fa:'می‌توانید صفحه را به اشتراک بگذارید؟'},
+{de:'Das Update ist fehlgeschlagen.',en:'The update failed.',fa:'آپدیت ناموفق بود.'},
+{de:'Ich starte den Dienst neu.',en:'I am restarting the service.',fa:'دارم سرویس را ری‌استارت می‌کنم.'},
+{de:'Ich deinstalliere das Programm.',en:'I am uninstalling the program.',fa:'دارم برنامه را حذف می‌کنم.'},
+{de:'Der Virenscanner hat etwas gefunden.',en:'The antivirus found something.',fa:'آنتی‌ویروس چیزی پیدا کرد.'},
+{de:'Ich richte den neuen PC ein.',en:'I am setting up the new PC.',fa:'دارم رایانه جدید را راه‌اندازی می‌کنم.'},
+{de:'Das System reagiert nicht.',en:'The system is not responding.',fa:'سیستم جواب نمی‌دهد.'},
+{de:'Ich eskaliere das Ticket.',en:'I am escalating the ticket.',fa:'دارم تیکت را ارجاع می‌دهم.'},
+]},
+interview:{name:'Vorstellungsgespräch',fa:'مصاحبه IT',icon:'🤝',color:'#a855f7',words:[
+{de:'Erzählen Sie von sich.',en:'Tell me about yourself.',fa:'از خودتان بگویید.'},
+{de:'Warum möchten Sie Informatiker werden?',en:'Why do you want to become an IT specialist?',fa:'چرا می‌خواهید متخصص IT شوید؟'},
+{de:'Was sind Ihre Stärken?',en:'What are your strengths?',fa:'نقاط قوت شما چیست؟'},
+{de:'Was sind Ihre Schwächen?',en:'What are your weaknesses?',fa:'نقاط ضعف شما چیست؟'},
+{de:'Haben Sie Erfahrung mit Netzwerken?',en:'Do you have experience with networks?',fa:'تجربه کار با شبکه دارید؟'},
+{de:'Welche Betriebssysteme kennen Sie?',en:'Which operating systems do you know?',fa:'با کدام سیستم‌عامل‌ها آشنا هستید؟'},
+{de:'Können Sie im Team arbeiten?',en:'Can you work in a team?',fa:'می‌توانید در تیم کار کنید؟'},
+{de:'Wie lösen Sie Probleme?',en:'How do you solve problems?',fa:'چطور مشکلات را حل می‌کنید؟'},
+{de:'Was wissen Sie über unser Unternehmen?',en:'What do you know about our company?',fa:'در مورد شرکت ما چه می‌دانید؟'},
+{de:'Wo sehen Sie sich in fünf Jahren?',en:'Where do you see yourself in five years?',fa:'پنج سال دیگر خودتان را کجا می‌بینید؟'},
+{de:'Ich bin teamfähig.',en:'I am a team player.',fa:'من توانایی کار تیمی دارم.'},
+{de:'Ich lerne schnell.',en:'I learn quickly.',fa:'سریع یاد می‌گیرم.'},
+{de:'Ich bin zuverlässig.',en:'I am reliable.',fa:'من قابل اعتماد هستم.'},
+{de:'Ich bin motiviert.',en:'I am motivated.',fa:'من انگیزه دارم.'},
+{de:'Ich bin pünktlich.',en:'I am punctual.',fa:'من وقت‌شناس هستم.'},
+{de:'Ich arbeite strukturiert.',en:'I work in a structured way.',fa:'به صورت منظم کار می‌کنم.'},
+{de:'Ich bin flexibel.',en:'I am flexible.',fa:'من انعطاف‌پذیر هستم.'},
+{de:'Ich bin bereit, Neues zu lernen.',en:'I am willing to learn new things.',fa:'حاضرم چیزهای جدید یاد بگیرم.'},
+{de:'Ich habe Erfahrung mit Windows.',en:'I have experience with Windows.',fa:'تجربه کار با ویندوز دارم.'},
+{de:'Ich kenne die Grundlagen von Linux.',en:'I know the basics of Linux.',fa:'اصول پایه لینوکس را می‌دانم.'},
+{de:'Ich kann selbstständig arbeiten.',en:'I can work independently.',fa:'می‌توانم مستقل کار کنم.'},
+{de:'Ich löse Probleme analytisch.',en:'I solve problems analytically.',fa:'مشکلات را به صورت تحلیلی حل می‌کنم.'},
+{de:'Ich habe in meiner Freizeit programmiert.',en:'I programmed in my free time.',fa:'در اوقات فراغت برنامه‌نویسی کرده‌ام.'},
+{de:'Wann beginnt die Ausbildung?',en:'When does the apprenticeship start?',fa:'دوره آموزشی کی شروع می‌شود؟'},
+{de:'Wie hoch ist die Ausbildungsvergütung?',en:'What is the training salary?',fa:'حقوق دوران آموزش چقدر است؟'},
+{de:'Gibt es Möglichkeiten zur Weiterbildung?',en:'Are there opportunities for further training?',fa:'امکان آموزش بیشتر وجود دارد؟'},
+{de:'Ich freue mich auf die Herausforderung.',en:'I look forward to the challenge.',fa:'مشتاق این چالش هستم.'},
+{de:'Vielen Dank für das Gespräch.',en:'Thank you for the conversation.',fa:'خیلی ممنون از مصاحبه.'},
+{de:'Ich bin sehr an dieser Stelle interessiert.',en:'I am very interested in this position.',fa:'بسیار به این موقعیت علاقه‌مند هستم.'},
+{de:'Haben Sie Fragen an uns?',en:'Do you have any questions for us?',fa:'آیا سوالی از ما دارید؟'},
+{de:'Wie gehen Sie mit Stress um?',en:'How do you deal with stress?',fa:'با استرس چطور کنار می‌آیید؟'},
+{de:'Was motiviert Sie?',en:'What motivates you?',fa:'چه چیزی شما را انگیزه می‌دهد؟'},
+{de:'Ich habe Grundkenntnisse in Netzwerktechnik.',en:'I have basic knowledge in networking.',fa:'دانش پایه در شبکه‌بندی دارم.'},
+{de:'Ich spreche Deutsch und Englisch.',en:'I speak German and English.',fa:'آلمانی و انگلیسی صحبت می‌کنم.'},
+{de:'Ich bin kommunikativ.',en:'I am communicative.',fa:'من ارتباط‌گر هستم.'},
+{de:'Bitte schildern Sie eine schwierige Situation.',en:'Please describe a difficult situation.',fa:'یک موقعیت سخت را توضیح دهید.'},
+{de:'Ich bin ab sofort verfügbar.',en:'I am available immediately.',fa:'از همین الان در دسترس هستم.'},
+{de:'Ich freue mich auf eine positive Rückmeldung.',en:'I look forward to a positive response.',fa:'منتظر پاسخ مثبت شما هستم.'},
+]},
+tools:{name:'Tools & Software',fa:'ابزارها',icon:'🔧',color:'#84cc16',words:[
+{de:'Microsoft Windows',en:'Microsoft Windows',fa:'ویندوز - سیستم‌عامل مایکروسافت'},
+{de:'Microsoft Office',en:'Microsoft Office',fa:'آفیس - مجموعه نرم‌افزار اداری'},
+{de:'Microsoft Excel',en:'Microsoft Excel',fa:'اکسل - نرم‌افزار جداول'},
+{de:'Microsoft Word',en:'Microsoft Word',fa:'ورد - نرم‌افزار متن'},
+{de:'Microsoft Teams',en:'Microsoft Teams',fa:'تیمز - ارتباط تیمی'},
+{de:'Microsoft Outlook',en:'Microsoft Outlook',fa:'اوت‌لوک - ایمیل و تقویم'},
+{de:'Active Directory',en:'Active Directory',fa:'اکتیو دایرکتوری - مدیریت کاربران'},
+{de:'Visual Studio Code',en:'Visual Studio Code',fa:'VS Code - ویرایشگر کد محبوب'},
+{de:'Git',en:'Git',fa:'گیت - کنترل نسخه'},
+{de:'GitHub',en:'GitHub',fa:'گیت‌هاب - مخزن کد'},
+{de:'Docker',en:'Docker',fa:'داکر - کانتینرسازی'},
+{de:'VMware',en:'VMware',fa:'وی‌ام‌ور - مجازی‌سازی'},
+{de:'VirtualBox',en:'VirtualBox',fa:'ویرچوال‌باکس - مجازی‌سازی رایگان'},
+{de:'Wireshark',en:'Wireshark',fa:'وایرشارک - تحلیل شبکه'},
+{de:'PuTTY',en:'PuTTY',fa:'پوتی - اتصال SSH'},
+{de:'FileZilla',en:'FileZilla',fa:'فایل‌زیلا - انتقال FTP'},
+{de:'7-Zip',en:'7-Zip',fa:'سون‌زیپ - فشرده‌سازی'},
+{de:'TeamViewer',en:'TeamViewer',fa:'تیم‌ویور - دسترسی از راه دور'},
+{de:'AnyDesk',en:'AnyDesk',fa:'اینی‌دسک - دسترسی از راه دور'},
+{de:'Jira',en:'Jira',fa:'جیرا - مدیریت پروژه'},
+{de:'Confluence',en:'Confluence',fa:'کانفلوئنس - ویکی تیمی'},
+{de:'Slack',en:'Slack',fa:'اسلک - چت تیمی'},
+{de:'Zoom',en:'Zoom',fa:'زوم - ویدیوکنفرانس'},
+{de:'Nagios',en:'Nagios',fa:'ناجیوس - مانیتورینگ شبکه'},
+{de:'Zabbix',en:'Zabbix',fa:'زابیکس - مانیتورینگ'},
+{de:'Ansible',en:'Ansible',fa:'انسیبل - اتوماسیون'},
+{de:'Postman',en:'Postman',fa:'پست‌من - تست API'},
+{de:'MySQL Workbench',en:'MySQL Workbench',fa:'ابزار گرافیکی MySQL'},
+{de:'Linux Terminal',en:'Linux terminal',fa:'ترمینال لینوکس'},
+{de:'PowerShell',en:'Windows PowerShell',fa:'پاورشل ویندوز'},
+{de:'CMD',en:'command prompt',fa:'CMD - خط فرمان ویندوز'},
+{de:'Bash',en:'Bash shell',fa:'باش - خط فرمان لینوکس'},
+{de:'Nmap',en:'Nmap',fa:'ان‌مپ - اسکن شبکه'},
+{de:'WSUS',en:'Windows Server Update Services',fa:'WSUS - سرویس آپدیت ویندوز سرور'},
+{de:'Hyper-V',en:'Hyper-V',fa:'هایپر-وی - مجازی‌سازی مایکروسافت'},
+{de:'ESXi',en:'VMware ESXi',fa:'ESXi - هایپرویزور VMware'},
+{de:'Proxmox',en:'Proxmox VE',fa:'پروکسموکس - مجازی‌سازی متن‌باز'},
+{de:'pfSense',en:'pfSense',fa:'pfSense - فایروال متن‌باز'},
+{de:'Notepad++',en:'Notepad++',fa:'نوت‌پد پلاس - ویرایشگر متن'},
+{de:'WinSCP',en:'WinSCP',fa:'وین‌اس‌سی‌پی - انتقال امن فایل'},
+]},
+};
+
+let state={xp:0,level:1,streak:0,lastDay:null,learned:{},wrong:{},favorites:[],quizAnswers:0,quizCorrect:0};
+const LEVELS=[0,100,250,500,900,1500,2500,4000,6000,9000,13000];
+function saveState(){try{localStorage.setItem('ita2',JSON.stringify(state));}catch(e){}}
+function loadState(){try{const s=localStorage.getItem('ita2');if(s)state={...state,...JSON.parse(s)};}catch(e){}checkStreak();}
+function checkStreak(){const today=new Date().toDateString();if(state.lastDay!==today){const yest=new Date();yest.setDate(yest.getDate()-1);if(state.lastDay===yest.toDateString())state.streak++;else if(state.lastDay!==today)state.streak=0;state.lastDay=today;saveState();}}
+function addXP(amt){state.xp+=amt;const lvlXP=LEVELS[state.level]||99999;if(state.xp>=lvlXP&&state.level<LEVELS.length-1){state.level++;showToast(`🎉 Level ${state.level}!`);}else{showToast(`+${amt} XP`);}saveState();updateHomeUI();}
+function showToast(msg){const t=document.getElementById('xp-toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
+function updateHomeUI(){
+  const learned=Object.keys(state.learned).length;
+  const acc=state.quizAnswers>0?Math.round(state.quizCorrect/state.quizAnswers*100)+'%':'-';
+  document.getElementById('stat-learned').textContent=learned;
+  document.getElementById('stat-xp').textContent=state.xp;
+  document.getElementById('stat-acc').textContent=acc;
+  document.getElementById('lvl-num').textContent=state.level;
+  document.getElementById('streak-count').textContent=state.streak;
+  const cur=LEVELS[state.level-1]||0;const nxt=LEVELS[state.level]||LEVELS[LEVELS.length-1];
+  const pct=Math.min(100,Math.round((state.xp-cur)/(nxt-cur)*100));
+  document.getElementById('xp-fill').style.width=pct+'%';
+  document.getElementById('xp-text').textContent=`${state.xp} / ${nxt}`;
+  const grid=document.getElementById('cats-grid');grid.innerHTML='';
+  Object.entries(VOCAB).forEach(([key,cat])=>{
+    const done=cat.words.filter(w=>state.learned[key+'_'+w.de]).length;
+    const p=Math.round(done/cat.words.length*100);
+    const div=document.createElement('div');
+    div.className='cat-card';
+    div.style.borderColor=cat.color+'30';
+    div.innerHTML=`<div class="cat-icon">${cat.icon}</div><div class="cat-name">${cat.fa}</div><div class="cat-name-de">${cat.name}</div><div class="cat-count">${done}/${cat.words.length} مورد</div><div class="cat-prog"><div class="cat-prog-fill" style="width:${p}%;background:${cat.color}"></div></div>`;
+    div.onclick=()=>startFlashcard(key);
+    grid.appendChild(div);
+  });
+}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));const map={home:'nav-home',quiz:'nav-quiz',favorites:'nav-fav'};if(map[id])document.getElementById(map[id]).classList.add('active');}
+function goHome(){showScreen('home');updateHomeUI();}
+let fcWords=[],fcIdx=0,fcCat='';
+function startFlashcard(catKey){fcCat=catKey;const cat=VOCAB[catKey];const weak=cat.words.filter(w=>state.wrong[catKey+'_'+w.de]>0).sort((a,b)=>(state.wrong[catKey+'_'+b.de]||0)-(state.wrong[catKey+'_'+a.de]||0));const rest=cat.words.filter(w=>!state.wrong[catKey+'_'+w.de]||state.wrong[catKey+'_'+w.de]===0);fcWords=[...weak,...rest];fcIdx=0;document.getElementById('fc-cat-name').textContent=cat.fa+' — '+cat.name;showScreen('flashcard');renderCard();}
+function startWeakWords(){let all=[];Object.entries(VOCAB).forEach(([key,cat])=>{cat.words.forEach(w=>{if((state.wrong[key+'_'+w.de]||0)>0)all.push({...w,_cat:key});});});if(all.length===0){showToast('هیچ لغت ضعیفی نداری! 🎉');return;}fcCat='weak';fcWords=all;fcIdx=0;document.getElementById('fc-cat-name').textContent='لغات ضعیف';showScreen('flashcard');renderCard();}
+function renderCard(){if(fcIdx>=fcWords.length){goHome();showToast('دسته تموم شد! 🎉');return;}const w=fcWords[fcIdx];document.getElementById('card-de').textContent=w.de;document.getElementById('card-en').textContent=w.en;document.getElementById('card-fa').textContent=w.fa;document.getElementById('fc-prog-text').textContent=`${fcIdx+1}/${fcWords.length}`;document.getElementById('fc-prog-fill').style.width=`${((fcIdx+1)/fcWords.length)*100}%`;document.getElementById('flip-card').classList.remove('flipped');const key=(w._cat||fcCat)+'_'+w.de;document.getElementById('card-fav').textContent=state.favorites.includes(key)?'★':'☆';}
+function flipCard(){document.getElementById('flip-card').classList.toggle('flipped');}
+function toggleFav(){const w=fcWords[fcIdx];const key=(w._cat||fcCat)+'_'+w.de;const i=state.favorites.indexOf(key);if(i>=0){state.favorites.splice(i,1);document.getElementById('card-fav').textContent='☆';}else{state.favorites.push(key);document.getElementById('card-fav').textContent='★';showToast('⭐ اضافه شد');}saveState();}
+function markRight(){const w=fcWords[fcIdx];const key=(w._cat||fcCat)+'_'+w.de;state.learned[key]=true;if(state.wrong[key]>0)state.wrong[key]=Math.max(0,(state.wrong[key]||0)-1);addXP(10);fcIdx++;renderCard();}
+function markWrong(){const w=fcWords[fcIdx];const key=(w._cat||fcCat)+'_'+w.de;state.wrong[key]=(state.wrong[key]||0)+1;fcWords.push(w);fcIdx++;renderCard();}
+let qWords=[],qIdx=0,qCorrect=0,qCat='';
+function goQuiz(){const keys=Object.keys(VOCAB);qCat=keys[Math.floor(Math.random()*keys.length)];startQuiz(qCat);}
+function startQuiz(catKey){qCat=catKey;const all=VOCAB[catKey].words;qWords=[...all].sort(()=>Math.random()-0.5).slice(0,10);qIdx=0;qCorrect=0;document.getElementById('quiz-correct').textContent='0';document.getElementById('quiz-total-disp').textContent=qWords.length;document.getElementById('quiz-result').style.display='none';['quiz-q-num','quiz-prog','quiz-question','quiz-options'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='';});document.getElementById('quiz-next').style.display='none';showScreen('quiz');renderQuiz();}
+function renderQuiz(){if(qIdx>=qWords.length){showResult();return;}const w=qWords[qIdx];document.getElementById('quiz-word').textContent=w.de;document.getElementById('quiz-word-en').textContent=w.en;document.getElementById('quiz-q-num').textContent=`سوال ${qIdx+1} از ${qWords.length}`;document.getElementById('quiz-prog-fill').style.width=`${((qIdx+1)/qWords.length)*100}%`;document.getElementById('quiz-next').style.display='none';const allWords=VOCAB[qCat].words;const wrong=allWords.filter(x=>x.de!==w.de).sort(()=>Math.random()-0.5).slice(0,3);const opts=[...wrong,w].sort(()=>Math.random()-0.5);const letters=['A','B','C','D'];const container=document.getElementById('quiz-options');container.innerHTML='';opts.forEach((o,i)=>{const btn=document.createElement('button');btn.className='quiz-opt';btn.innerHTML=`<div class="opt-letter">${letters[i]}</div><span>${o.fa}</span>`;btn.onclick=()=>checkAnswer(o.de===w.de,btn,container,w);container.appendChild(btn);});}
+function checkAnswer(correct,btn,container,w){state.quizAnswers++;container.querySelectorAll('.quiz-opt').forEach(b=>b.classList.add('disabled'));if(correct){btn.classList.add('correct');qCorrect++;state.quizCorrect++;addXP(20);document.getElementById('quiz-correct').textContent=qCorrect;}else{btn.classList.add('wrong');container.querySelectorAll('.quiz-opt').forEach(b=>{if(b.querySelector('span')&&b.querySelector('span').textContent===w.fa)b.classList.add('correct');});state.wrong[qCat+'_'+w.de]=(state.wrong[qCat+'_'+w.de]||0)+1;addXP(2);}saveState();document.getElementById('quiz-next').style.display='block';}
+function nextQuestion(){qIdx++;renderQuiz();}
+function showResult(){const pct=Math.round(qCorrect/qWords.length*100);let emoji='😅',title='ادامه بده!';if(pct>=90){emoji='🏆';title='فوق‌العاده!';}else if(pct>=70){emoji='🎉';title='عالی!';}else if(pct>=50){emoji='💪';title='خوب بود!';}document.getElementById('res-emoji').textContent=emoji;document.getElementById('res-title').textContent=title;document.getElementById('res-score').textContent=`${qCorrect}/${qWords.length}`;document.getElementById('res-sub').textContent=`${pct}% درست`;document.getElementById('res-xp').textContent=`+${qCorrect*20+(pct>=70?50:0)} XP`;document.getElementById('quiz-result').style.display='flex';['quiz-q-num','quiz-prog','quiz-question','quiz-options'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});document.getElementById('quiz-next').style.display='none';}
+function retryQuiz(){startQuiz(qCat);}
+function showFavorites(){showScreen('favorites');const cont=document.getElementById('fav-content');if(state.favorites.length===0){cont.innerHTML='<div class="fav-empty"><div class="fav-empty-icon">⭐</div><div>هنوز علاقه‌مندی‌ای نداری</div><div style="font-size:12px">در flashcard ستاره بزن</div></div>';return;}let html='<div class="fav-list">';state.favorites.forEach(key=>{const parts=key.split('_');const cat=parts[0];const de=parts.slice(1).join('_');const word=VOCAB[cat]?.words.find(w=>w.de===de);if(word)html+=`<div class="fav-item"><div class="fav-de">${word.de}</div><div class="fav-fa">${word.fa}</div><div class="fav-remove" onclick="removeFav('${key}')">✕</div></div>`;});html+='</div>';cont.innerHTML=html;}
+function removeFav(key){state.favorites=state.favorites.filter(f=>f!==key);saveState();showFavorites();}
+function startFavoritesFC(){if(state.favorites.length===0){showToast('هنوز علاقه‌مندی نداری!');return;}let words=[];state.favorites.forEach(key=>{const parts=key.split('_');const cat=parts[0];const de=parts.slice(1).join('_');const word=VOCAB[cat]?.words.find(w=>w.de===de);if(word)words.push({...word,_cat:cat});});fcCat='fav';fcWords=words;fcIdx=0;document.getElementById('fc-cat-name').textContent='⭐ علاقه‌مندی‌ها';showScreen('flashcard');renderCard();}
+loadState();
+setTimeout(()=>{showScreen('home');updateHomeUI();},2700);
+</script>
+</body>
+</html>
